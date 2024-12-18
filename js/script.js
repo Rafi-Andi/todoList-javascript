@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         addTodo();
     });
+
+    if(mendukung()){
+        loadData();
+    }
 });
 
 function membuatId(){
@@ -77,6 +81,8 @@ function membuatTodo(todoObjek){
 
         tanggal.classList.toggle('line-through');
         tanggal.classList.toggle('text-gray-600');
+
+        saveData()
     })
 
     const kontainerKiri = document.createElement('div');
@@ -108,6 +114,8 @@ function hapusTodo(todoId){
     todos.splice(todoTarget, 1)
 
     document.dispatchEvent(new Event(RENDER_EVENT))
+
+    saveData()
 }
 
 function todoFindIndex(todoId){
@@ -118,4 +126,35 @@ function todoFindIndex(todoId){
     }
 
     return -1;
+}
+
+function saveData(){
+    if(mendukung){
+        const parsed = JSON.stringify(todos);
+        localStorage.setItem(STORAGE_KEY, parsed);
+        document.dispatchEvent(new Event(SAVE_EVENT));
+    }
+}
+
+function loadData(){
+    const dataStorage = localStorage.getItem(STORAGE_KEY);
+    const data = JSON.parse(dataStorage);
+
+    if(data !== null){
+        for (const todo of data){
+            todos.push(todo);
+        }
+    }
+
+    document.dispatchEvent(new Event(RENDER_EVENT));
+}
+const SAVE_EVENT = 'save-event'
+const STORAGE_KEY = 'storage-key'
+function mendukung(){
+    if(typeof (Storage) === 'undefined'){
+        alert('tidak mendukung')
+        return false
+    }
+
+    return true;
 }
