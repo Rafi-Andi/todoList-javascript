@@ -36,6 +36,8 @@ function addTodo(){
     todos.push(todoObjek)
 
     document.dispatchEvent(new Event(RENDER_EVENT))
+
+    saveData()
 }
 
 document.addEventListener(RENDER_EVENT, function(){
